@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Event;
 
 trait LogsOutgoingMessages
 {
-    public function logOutGoingMessages(): void
+    public function logOutgoingMessages(): void
     {
         Event::listen(MessageSent::class, function ($event) {
             if (config('logbook.channel') === 'api') {
