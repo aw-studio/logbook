@@ -1,0 +1,54 @@
+{
+    "name": "aw-studio/logbook",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jannes Behrens",
+            "email": "jannes@aw-studio.de"
+        },
+        {
+            "name": "Lukas Heller",
+            "email": "lukas@aw-studio.de"
+        }
+    ],
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "autoload": {
+        "psr-4": {
+            "AwStudio\\Logbook\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "illuminate/support": "^10.4",
+        "guzzlehttp/guzzle": "^7.5"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "AwStudio\\Logbook\\LogbookServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-main": "1.x-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "orchestra/testbench": "^8.1",
+        "pestphp/pest": "^2.3",
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "laravel/pint": "^1.7"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}
