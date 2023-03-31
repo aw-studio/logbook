@@ -96,8 +96,6 @@ class Logbook
 
     public function log(mixed $payload): LogEntry
     {
-        ray($this->batch);
-
         return (new LogEntry($payload))
                 ->setBatchName($this->batch->getName())
                 ->setBatchId($this->batch->getUuid())

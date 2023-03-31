@@ -157,7 +157,6 @@ class LogEntry
         $log = json_encode($properties);
 
         $filepath = $filepath ?? $this->getFilePath();
-        ray($log, $filepath);
 
         file_put_contents($filepath, $log.PHP_EOL, FILE_APPEND);
     }
