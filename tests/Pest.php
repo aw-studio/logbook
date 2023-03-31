@@ -24,3 +24,10 @@ function parseLogFile()
 
     return $logs;
 }
+
+function latestLogEntry()
+{
+    $logs = parseLogFile();
+
+    return end($logs);
+}

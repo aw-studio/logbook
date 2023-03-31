@@ -4,20 +4,12 @@ use AwStudio\Logbook\Logbook;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 
-afterEach(function () {
-    fclose(fopen(getLogbookForTests(), 'w'));
-});
-
-beforeEach(function () {
-    Config::set('logbook.channel', 'file');
-});
-
 test('it can log to file', function () {
     Config::set('logbook.channel', 'file');
     $logbook = new Logbook();
-    $logbook->log('test', 'test', ['test' => 'test']);
-    $this->assertFileExists(storage_path('logs/logbook.log'));
-    $this->assertStringContainsString('test', file_get_contents(storage_path('logs/logbook.log')));
+    $logbook->log('Foo bar baz');
+    expect(storage_path('logs/logbook.log'))->toBeReadableFile();
+    expect(file_get_contents(storage_path('logs/logbook.log')))->toContain('Foo bar baz');
 });
 
 test('It can log to api', function () {
@@ -52,26 +44,24 @@ test('It logs the caller_information', function () {
     $logbook->log('test');
     $logs = parseLogFile();
 
-    expect($logs[0]['occurrence']['file'])
+    expect(latestLogEntry()['occurrence']['file'])
         ->toContain(realpath(__DIR__).'/LogbookTest.php');
-    expect($logs[0]['occurrence']['class'])->toContain('LogbookTest');
+    expect(latestLogEntry()['occurrence']['class'])->toContain('LogbookTest');
 });
 
 test('It logs the batch id when a batch was opened', function () {
     $logbook = new Logbook();
     $logbook->open();
     $logbook->log('test');
-    $logs = parseLogFile();
 
-    expect($logs[0]['batch_id'])->toBe($logbook->getBatch()->getUuid());
+    expect(latestLogEntry()['batch_id'])->toBe($logbook->getBatch()->getUuid());
 });
 
 test('It logs the batch name when a batch was opened', function () {
     $logbook = new Logbook();
     $logbook->open('foo_batch');
     $logbook->log('test');
-    $logs = parseLogFile();
-    expect($logs[0]['batch_name'])->toBe($logbook->getBatch()->getName());
+    expect(latestLogEntry()['batch_name'])->toBe($logbook->getBatch()->getName());
 });
 
 test('It logs different batches with different batch ids', function () {
@@ -84,8 +74,14 @@ test('It logs different batches with different batch ids', function () {
     $logbook->log('test');
     // dont close the batch
 
-    $logs = parseLogFile();
+    expect(latestLogEntry()['batch_id'])->not->toBe(parseLogFile()[0]['batch_id']);
+    expect(latestLogEntry()['batch_id'])->toBe($logbook->getBatch()->getUuid());
+});
 
-    expect($logs[0]['batch_id'])->not->toBe($logs[1]['batch_id']);
-    expect($logs[1]['batch_id'])->toBe($logbook->getBatch()->getUuid());
+afterEach(function () {
+    fclose(fopen(getLogbookForTests(), 'w'));
+});
+
+beforeEach(function () {
+    Config::set('logbook.channel', 'file');
 });

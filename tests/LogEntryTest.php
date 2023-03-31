@@ -36,8 +36,7 @@ test('It writes the logEntry to the logbook file when destructed', function () {
     // this will trigger the __destruct method
     unset($logbook);
 
-    $logs = parseLogFile();
-    expect($logs[0]['payload'])->toBe([
+    expect(latestLogEntry()['payload'])->toBe([
         'message' => 'test',
     ]);
 });
