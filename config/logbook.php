@@ -25,7 +25,7 @@ return [
     /**
      * The endpoint to send the logbook to.
      */
-    'api_endpoint' => env('LOGBOOK_ENDPOINT', 'https://logbook.aw-studio.de/api/log'),
+    'api_endpoint' => env('LOGBOOK_ENDPOINT', 'https://api.logbook.aw-studio.de/log'),
 
     /**
      * The project token to use when sending the logbook to the api.
