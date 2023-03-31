@@ -2,13 +2,16 @@
 
 namespace AwStudio\Logbook\Facades;
 
+use AwStudio\Logbook\LogEntry;
+use AwStudio\Logbook\Support\ObfuscatorInterface;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static \AwStudio\Logbook\LogEntry request(string $name, string $description)
- * @method static \AwStudio\Logbook\LogEntry modelEvent()
- * @method static \AwStudio\Logbook\LogEntry log(string $name, string $description)
- * @method static \AwStudio\Logbook\Support\AttributeObfuscator getObfuscator()
+ * @method static LogEntry request()
+ * @method static LogEntry modelEvent()
+ * @method static LogEntry log()
+ * @method static LogEntry exception()
+ * @method static ObfuscatorInterface getObfuscator()
  *
  * @see \AwStudio\Logbook\Logbook
  */

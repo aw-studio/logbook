@@ -7,33 +7,33 @@ use Illuminate\Database\Eloquent\Model;
 
 class LogEntry
 {
-    private $payload;
+    public $payload;
 
-    private $tags = [];
+    public $tags = [];
 
-    private $batchName;
+    public $batchName;
 
-    private $batchId;
+    public $batchId;
 
-    private $callerInformation;
+    public $occurrence;
 
-    private $location;
+    public $location;
 
-    private $loggedAt;
+    public $loggedAt;
 
-    private $withCallerInformation = true;
+    public $logOccurrence = true;
 
-    private string $type = 'log';
+    public string $type = 'log';
 
-    private $model_type;
+    public $model_type;
 
-    private $model_id;
+    public $model_id;
 
-    private $description;
+    public $description;
 
-    private $logToLocalOnly = false;
+    public $logToLocalOnly = false;
 
-    private $copyLocal = false;
+    public $copyLocal = false;
 
     public function __construct($payload)
     {
@@ -41,7 +41,7 @@ class LogEntry
         $this->loggedAt = Carbon::now();
     }
 
-    public function tag($tag)
+    public function setTag($tag)
     {
         $this->tags[] = $tag;
 
@@ -62,9 +62,9 @@ class LogEntry
         return $this;
     }
 
-    public function setCallerInformation($callerInformation)
+    public function setOccurrence($callerInformation)
     {
-        $this->callerInformation = $callerInformation;
+        $this->occurrence = $callerInformation;
 
         $this->setLocation($callerInformation['file'].':'.$callerInformation['line']);
 
@@ -78,21 +78,21 @@ class LogEntry
         return $this;
     }
 
-    public function type(string $type)
+    public function setType(string $type)
     {
         $this->type = $type;
 
         return $this;
     }
 
-    public function description(string $description)
+    public function setDescription(string $description)
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function model(Model $model)
+    public function setModel(Model $model)
     {
         $this->model_type = $model->getMorphClass();
         $this->model_id = $model->getKey();
@@ -101,14 +101,14 @@ class LogEntry
         return $this;
     }
 
-    public function withoutCallerInformation()
+    public function dontLogOccurrence()
     {
-        $this->withCallerInformation = false;
+        $this->logOccurrence = false;
 
         return $this;
     }
 
-    public function ttl(int $ttl)
+    public function setTtl(int $ttl)
     {
         // $this->loggedAt = Carbon::now()->subSeconds($ttl);
 
@@ -138,7 +138,7 @@ class LogEntry
         $this->logToFile();
     }
 
-    protected function logToFile($filepath = null)
+    public function logToFile($filepath = null)
     {
         $properties = [
             'tags' => $this->tags,
@@ -151,7 +151,7 @@ class LogEntry
             'model_type' => $this->model_type,
             'model_id' => $this->model_id,
             'description' => $this->description,
-            'occurrence' => $this->withCallerInformation ? $this->callerInformation : null,
+            'occurrence' => $this->logOccurrence ? $this->occurrence : null,
         ];
 
         $log = json_encode($properties);

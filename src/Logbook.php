@@ -2,6 +2,7 @@
 
 namespace AwStudio\Logbook;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Throwable;
 
@@ -33,7 +34,7 @@ class Logbook
 
     public function __destruct()
     {
-        if (config('logbook.channel') === 'api') {
+        if (Config::get('logbook.channel') === 'api') {
             $this->sendLogsToApi();
         }
     }
@@ -76,7 +77,7 @@ class Logbook
             'code' => (int) $exception->getCode(),
             'file' => $exception->getFile().':'.$exception->getLine(),
         ])
-        ->type('exception')
+        ->setType('exception')
         ->setLocation(str_replace(base_path(), '', $exception->getFile()).':'.$exception->getLine());
 
         return $this;
@@ -88,10 +89,10 @@ class Logbook
         array $properties = [])
     {
         return $this->log($properties)
-                ->model($model)
-                ->description($event)
-                ->withoutCallerInformation()
-                ->type('model_event');
+                ->setModel($model)
+                ->setDescription($event)
+                ->dontLogOccurrence()
+                ->setType('model_event');
     }
 
     public function log(mixed $payload): LogEntry
@@ -99,10 +100,10 @@ class Logbook
         return (new LogEntry($payload))
                 ->setBatchName($this->batch->getName())
                 ->setBatchId($this->batch->getUuid())
-                ->setCallerInformation($this->getCallerInformation());
+                ->setOccurrence($this->getBacktraceInformation());
     }
 
-    public function getCallerInformation()
+    public function getBacktraceInformation()
     {
         $trace = debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT);
         // The information which file, line number, class and method that called the method

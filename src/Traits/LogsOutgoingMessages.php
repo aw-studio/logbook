@@ -13,12 +13,12 @@ trait LogsOutgoingMessages
         Event::listen(MessageSent::class, function ($event) {
             if (config('logbook.channel') === 'api') {
                 Logbook::log($this->apiLogContent($event))
-                    ->type('event')
-                    ->description('Message sent');
+                    ->setType('event')
+                    ->setDescription('Message sent');
             }
             Logbook::log($this->localLogContent($event))
-                ->type('event')
-                ->description('Message sent')
+                ->setType('event')
+                ->setDescription('Message sent')
                 ->localOnly();
         });
     }
